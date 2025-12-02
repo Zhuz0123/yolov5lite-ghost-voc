@@ -1,19 +1,31 @@
-# PASCAL VOC dataset http://host.robots.ox.ac.uk/pascal/VOC/
-# Train command: python train.py --data voc.yaml
-# Default dataset location is next to /yolov5:
-#   /parent_folder
-#     /VOC
-#     /yolov5
+# VOC dataset config for YOLOv5-Lite + VOC2007/2012
 
+# 绝对路径的索引文件（前面你已经确认存在）
+train: /home/zhu/YOLOv5-Lite/datasets/VOC/train.txt
+val: /home/zhu/YOLOv5-Lite/datasets/VOC/val.txt
 
-# train and val data as 1) directory: path/images/, 2) file: path/images.txt, or 3) list: [path1/images/, path2/images/]
-train: /root/yolov5/data//VOC/images/train/  # 16551 images
-val: /root/yolov5/data//VOC/images/test/  # 4952 images
-test: /root/yolov5/data//VOC/images/test/  # 4952 images
-
-# number of classes
+# 类别数
 nc: 20
 
-# class names
-names: [ 'aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 'bus', 'car', 'cat', 'chair', 'cow', 'diningtable', 'dog',
-         'horse', 'motorbike', 'person', 'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor' ]
+# 类别名称（和 VOC 一致）
+names:
+  0: aeroplane
+  1: bicycle
+  2: bird
+  3: boat
+  4: bottle
+  5: bus
+  6: car
+  7: cat
+  8: chair
+  9: cow
+  10: diningtable
+  11: dog
+  12: horse
+  13: motorbike
+  14: person
+  15: pottedplant
+  16: sheep
+  17: sofa
+  18: train
+  19: tvmonitor
