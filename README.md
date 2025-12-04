@@ -1,53 +1,75 @@
-🚀 YOLOv5-Lite + Ghost Backbone for VOC (20-Class Lightweight Object Detection)
+# 🚀 YOLOv5-Lite + Ghost 主干网络 VOC 目标检测（轻量级高精度）
 
-A lightweight YOLOv5-Lite improved with Ghost-style backbone & enhanced training strategies — optimized for speed-accuracy trade-off on VOC dataset.
+该项目基于 YOLOv5-Lite，并将骨干网络替换为 **Ghost 风格（GhostConv + C3 Ghost）**，结合多策略训练优化，使其在 **轻量化、低显存设备** 上依然保持优秀检测性能，特别适合 **边缘部署与实时检测**。
 
-中文简介：本项目基于 YOLOv5-Lite，替换原 CSPDarkNet-Lite 主干为 Ghost-style 轻量网络，并结合输入尺寸提升与增强策略优化，实现更优的轻量化检测效果。
+---
 
-🔥 Highlights — What was improved
-模块	改进策略	效果
-Backbone	替换为 Ghost-style 主干（GhostConv + GhostBottleneck）	减小参数量 & 提升速度
-数据增强	Mosaic + Mixup 策略微调	缓解过拟合 & 提升鲁棒性
-输入尺寸	416 → 512	提升小目标检测能力
-实验方案	ExpA（不冻结） vs ExpB（冻结前 10 层）	ExpB 取得最佳效果
-推理速度	轻量结构保持高 FPS	适用边缘端部署
-📌 Final Performance Summary
-方法	Resolution	Backbone	Freeze	mAP@0.5	备注
-Baseline YOLOv5-Lite	416	原版	✗	0.32	原始效果
-ExpA	512	Ghost	✗	0.344	输入尺寸提升
-🚀 ExpB (Best)	512	Ghost	✓（前 10 层）	0.394 → 0.400	最优权重 best.pt
+## 🌟 项目亮点
 
-ExpB 相比 ExpA 净提升约 +5.6% mAP@0.5。
+| 分类 | 改进策略 | 效果 |
+|------|----------|------|
+| 网络结构 | 替换 Backbone 为 **Ghost-style 主干** | 参数更少，推理更快 |
+| 数据增强 | Mosaic=0.20、Mixup=0.05 | 提升泛化、抑制过拟合 |
+| 输入分辨率 | 416 → **512** | 强化小目标检测 |
+| 训练策略 | ExpA（不冻结） vs **ExpB（冻结前 10 层）** | ExpB 最优 |
+| 部署能力 | 超轻量级模型 | 低显存 GPU / 边缘设备可运行 |
 
-📸 Detection Demo (8 Images)
+---
 
-结果展示由 ExpB 的 best.pt 推理得到
+## 📌 最终性能对比
 
-<div align="center"> <img src="demo_images/000026.jpg" width="32%" /> <img src="demo_images/000113.jpg" width="32%" /> <img src="demo_images/000117.jpg" width="32%" /> <img src="demo_images/000150.jpg" width="32%" /> <img src="demo_images/000225.jpg" width="32%" /> <img src="demo_images/000236.jpg" width="32%" /> <img src="demo_images/000486.jpg" width="32%" /> <img src="demo_images/000842.jpg" width="32%" /> </div>
-🔧 Environment
-环境	版本建议
-Python	3.8 – 3.10
-PyTorch	≥ 1.11 (建议 2.0+)
-CUDA	11.x / 12.x
-GPU	≥ 4 GB 显存可训练，2 GB 可推理（如 MX450）
+| 方案 | 输入尺寸 | Backbone | 冻结 | mAP@0.5 | 说明 |
+|------|----------|----------|------|--------|------|
+| Baseline 初始模型 | 416 | 原版 | ✗ | **0.321** | 无优化 |
+| ExpA | 512 | Ghost | ✗ | **0.344** | 分辨率提升 |
+| **🚀 ExpB（最佳）** | 512 | Ghost | ✓（前 10 层） | **0.394 → 0.400** | 最优模型 |
+
+📌 结论：**Ghost 主干 + 冻结策略在轻量模型中显著提升 VOC 检测性能，且推理速度保持极快。**
+
+---
+
+## 📸 推理效果展示（8 张 Demo 图片）
+
+<div align="center">
+ <img src="demo_images/000026.jpg" width="32%" />
+ <img src="demo_images/000113.jpg" width="32%" />
+ <img src="demo_images/000117.jpg" width="32%" />
+ <img src="demo_images/000150.jpg" width="32%" />
+ <img src="demo_images/000225.jpg" width="32%" />
+ <img src="demo_images/000236.jpg" width="32%" />
+ <img src="demo_images/000486.jpg" width="32%" />
+ <img src="demo_images/000842.jpg" width="32%" />
+</div>
+
+---
+
+## 🧠 环境
+
+| 项目 | 推荐版本 |
+|------|----------|
+| Python | 3.8 – 3.10 |
+| PyTorch | ≥ 1.11（建议 2.0+） |
+| CUDA | 11.x / 12.x |
+| GPU | ≥ 4GB 可训练，2GB 可推理（如 MX450） |
 
 安装依赖：
-
+```bash
 pip install -r requirements.txt
 
-🧠 Inference (推理)
+🔍 推理 (Inference)
+
 python detect.py \
   --weights runs/train/exp18/weights/best.pt \
   --source demo_images \
   --img 512 \
   --conf 0.25
 
+推理结果输出目录：
 
-📌 推荐：
+runs/detect/exp/
 
-results → runs/detect/exp/
+🏋️‍♂️ 训练 (Training)
 
-🏋️‍♂️ Training (训练复现)
 python train.py \
   --cfg models/v5Lite-ghost-s.yaml \
   --weights '' \
@@ -58,36 +80,35 @@ python train.py \
   --hyp data/hyp.scratch-low.yaml \
   --workers 2
 
-继续训练 / 微调
+🔁 继续训练 / 微调
+
 python train.py \
   --cfg models/v5Lite-ghost-s.yaml \
   --weights runs/train/exp18/weights/best.pt \
   --data data/voc.yaml \
   --img-size 512
 
-📦 Pretrained Weights
-文件	说明
-best.pt	ExpB 最优模型（推荐部署）
-last.pt	最后一轮 checkpoint
+📦 预训练权重
+模型	文件路径	用途
+最佳模型（推荐部署）	runs/train/exp18/weights/best.pt	推理 / 迁移学习
+最新模型	runs/train/exp18/weights/last.pt	继续训练
+📂 项目结构
 
-📌 权重下载链接
-https://github.com/Zhuz0123/yolov5lite-ghost-voc/runs/train/exp18/weights/best.pt
-
-🧱 Project Structure
 YOLOv5-Lite
-├─ models
-│  ├─ v5Lite-ghost-s.yaml       # 改进后的 Ghost 主干
-├─ data/voc.yaml                # VOC 数据配置
-├─ runs/train                   # 训练日志与权重
-├─ demo_images                  # 示例推理图片（8 张）
-└─ detect.py / train.py         # 推理 / 训练脚本
-📜 License
+ ├─ models
+ │   ├─ v5Lite-ghost-s.yaml        # Ghost 主干网络
+ ├─ data/voc.yaml                  # VOC 数据集配置
+ ├─ runs/train/exp18               # 最优训练实验
+ ├─ demo_images                    # 推理示例图片
+ ├─ detect.py / train.py           # 推理 / 训练脚本
+ └─ requirements.txt
 
-本项目遵循 GPL-3.0 协议，用于研究与非商业用途。
+📜 许可协议
 
-📧 Contact
+本项目遵循 GPL-3.0 协议，仅供研究与非商业用途。
+📧 联系方式
 
-如有交流合作意向欢迎联系：
-
-Author: Zhuz0123  
+Author: Zhuz0123
 Email: 953153859@qq.com
+
+📌 如果本项目对你有帮助，欢迎 Star ⭐
